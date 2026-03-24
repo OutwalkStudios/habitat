@@ -1,0 +1,18 @@
+import { logger } from "../utils/logging";
+import child_process from "node:child_process";
+import path from "node:path";
+
+export default async function build(args) {
+    const projectName = path.basename(process.cwd());
+    const isDev = (args.dev || args.d);
+
+    logger.log(`building ${projectName}...`);
+
+    const base = `docker compose -f .habitat/docker-compose.yml ${isDev ? "-f .habitat/docker-compose.dev.yml" : ""}`.trim();
+    const command = [base, "build"].join(" ");
+
+    /* run the docker command */
+    child_process.execSync(command, { stdio: "inherit" });
+
+    logger.log("build completed.");
+}

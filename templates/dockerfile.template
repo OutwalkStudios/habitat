@@ -1,0 +1,64 @@
+# ---------- base ----------
+FROM node:{{node-version}}-alpine AS base
+WORKDIR /app
+
+# copy root and any workspace manifests
+COPY package.json package-lock.json ./
+{{copy-workspace-manifest}}
+
+# ---------- dependencies (development) ----------
+FROM base AS dependencies
+
+# install all dependencies
+RUN npm install
+
+# ---------- dependencies (production) ----------
+FROM base AS prod-dependencies
+
+# install production dependencies
+RUN npm ci
+
+# ---------- build (production) ----------
+FROM dependencies AS build
+
+# copy project files
+{{copy-project-input}}
+
+# configure environment variables
+ENV NODE_ENV=production
+
+# build the project workspace
+RUN {{build-command}}
+
+# ---------- runtime (development) ----------
+FROM dependencies AS development
+
+# copy project files
+{{copy-project-input}}
+
+# configure environment variables
+ENV NODE_ENV=development
+ENV PORT={{port}}
+
+# start the application
+EXPOSE {{port}}
+CMD {{dev-command}}
+
+# ---------- runtime (production) ----------
+FROM node:{{node-version}}-alpine AS production
+WORKDIR /app
+
+# configure environment variables
+ENV NODE_ENV=production
+ENV PORT={{port}}
+
+# copy only what is needed at runtime
+COPY --from=prod-dependencies /app/node_modules ./node_modules
+{{copy-project-manifest}}
+{{copy-project-output}}
+
+# start the application
+EXPOSE {{port}}
+CMD {{start-command}}
+
+
