@@ -70,7 +70,7 @@ export default async function init(args) {
             /* determine the port that the application runs on */
             const doesEnvFileExist = fs.existsSync(path.join(project, ".env"));
             const envConfig = doesEnvFileExist ? dotenv.parse(Buffer.from(fs.readFileSync(path.join(project, ".env")))) : null;
-            const port = envConfig ? Number(envConfig.PORT) : (3000 + Math.max(0, projects.indexOf(project) - 1));
+            const port = (envConfig && envConfig.PORT) ? Number(envConfig.PORT) : (3000 + Math.max(0, projects.indexOf(project) - 1));
 
             /* create and inject the template variables */
             const template = new TemplateBuilder(templatePath, path.join(habitatPath, folder));
@@ -106,7 +106,6 @@ export default async function init(args) {
             /* if a .env file exist, include it in the build */
             if (doesEnvFileExist) {
                 production.services[folder].env_file = [`${path.relative(habitatPath, project)}/.env`];
-                development.services[folder].env_file = [`${path.relative(habitatPath, project)}/.env`];
             }
         }
 
