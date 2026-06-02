@@ -29,7 +29,7 @@ const commands = {
 };
 
 try {
-    if (commands[cmd]) commands[cmd](args);
+    if (commands[cmd]) await commands[cmd](args);
     else logger.error("unrecognized command.");
 } catch (error) {
     logger.error(error.message);

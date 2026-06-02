@@ -58,3 +58,19 @@ export async function findProjectOutput(directory) {
 export async function loadPackage(directory = process.cwd()) {
     return JSON.parse(await fs.readFile(path.join(directory, "package.json")));
 }
+
+/* check if docker is running */
+export async function isDockerRunning() {
+    const paths = ["/var/run/docker.sock", `${process.env.HOME}/.docker/run/docker.sock`];
+
+    for (const path of paths) {
+        try {
+            await fs.access(path);
+            return true;
+        } catch {
+            continue;
+        }
+    }
+
+    return false;
+}
