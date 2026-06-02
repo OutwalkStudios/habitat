@@ -100,7 +100,7 @@ export default async function init(args) {
             development.services[folder] = {};
             development.services[folder].build = { target: "development" };
             development.services[folder].image = (isWorkspacesEnabled ? projectName + "/" + folder : folder) + ":dev";
-            development.services[folder].volumes = [`../${relativeProjectPath}:/app/${relativeProjectPath}`];
+            development.services[folder].volumes = [`../${relativeProjectPath}:/app/${relativeProjectPath}`, `/app/${relativeProjectPath}/node_modules`];
             development.services[folder].environment = { NODE_ENV: "development", CHOKIDAR_USEPOLLING: true };
 
             /* if a .env file exist, include it in the build */
