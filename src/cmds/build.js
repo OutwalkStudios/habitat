@@ -10,6 +10,10 @@ export default async function build(args) {
 
     logger.log(`building ${projectName}...`);
 
+    if (!fs.existsSync(path.join(process.cwd(), ".habitat", "docker-compose.yml"))) {
+        throw new Error("unable to detect .habitat/docker-compose.yml config.");
+    }
+
     if (isDev && !fs.existsSync(path.join(process.cwd(), ".habitat", "docker-compose.dev.yml"))) {
         throw new Error("unable to detect .habitat/docker-compose.dev.yml config.");
     }
