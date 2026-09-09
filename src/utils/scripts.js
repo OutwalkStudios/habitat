@@ -51,7 +51,7 @@ export function findStartCommand(scripts) {
         if (name.toLowerCase().includes("start")) score += 50;
 
         /* check for other common start script names */
-        if (["serve", "listen", "prod", "production"].some((script) => name.toLowerCase().includes(script))) {
+        if (["serve", "listen", "prod", "production", "preview"].some((script) => name.toLowerCase().includes(script))) {
             score += 30;
         }
 
