@@ -45,6 +45,11 @@ export async function findProjectOutput(directory) {
         output.push(".next", "public", "next.config.js");
     }
 
+    /* if the project is using vite, use the frameworks specified build folders */
+    if ((await glob("vite.config.@(js|ts)", { cwd: directory })).length) {
+        output.push("dist");
+    }
+
     /* if no framework is detected, scan for standard output directories and copy them */
     else {
         const common = ["dist", "build", "output", "out", "static", "public"];
